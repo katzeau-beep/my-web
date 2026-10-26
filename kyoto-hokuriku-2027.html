@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6F7F5">
+<title>2027 京都北陸自由行</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F7F5;
+    --card:#FFFFFF;
+    --ink:#1E252B;
+    --mute:#66727A;
+    --line:#DCE1DF;
+    --wash:#E8EDEE;
+    --indigo:#2B4C6F;
+    --moss:#6F8466;
+    --hanko:#B23A2E;
+    --serif:"Noto Serif TC","Hiragino Mincho ProN","Yu Mincho","PMingLiU",serif;
+    --sans:"Noto Sans TC","Hiragino Sans","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.7;
+    font-size:15px;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  a{color:inherit}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  :focus-visible{outline:2px solid var(--indigo);outline-offset:3px;border-radius:4px}
+
+  /* ---------- Header ---------- */
+  .hero{
+    position:relative;
+    padding:44px 24px 26px;
+    max-width:640px;margin:0 auto;
+    display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+  }
+  .hero h1{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:34px;
+    line-height:1.25;
+    letter-spacing:.06em;
+  }
+  .hero .year{
+    display:block;
+    font-family:var(--sans);
+    font-weight:300;
+    font-size:13px;
+    letter-spacing:.3em;
+    color:var(--mute);
+    margin-bottom:10px;
+  }
+  .hero .range{margin-top:14px;font-size:14px;color:var(--mute);letter-spacing:.04em}
+  .hero .count{
+    margin-top:18px;display:inline-flex;align-items:baseline;gap:6px;
+    font-size:13px;color:var(--mute);
+    padding-top:12px;border-top:1px solid var(--line);
+  }
+  .hero .count b{font-family:var(--serif);font-size:26px;color:var(--indigo);font-weight:700;line-height:1}
+  .hanko{
+    flex:none;width:58px;height:58px;border-radius:50%;
+    border:2px solid var(--hanko);color:var(--hanko);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.1;text-align:center;
+    transform:rotate(-8deg);margin-top:4px;
+  }
+
+  /* ---------- Day nav ---------- */
+  .nav{
+    position:sticky;top:0;z-index:20;
+    background:rgba(246,247,245,.94);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:640px;margin:0 auto;
+    display:flex;overflow-x:auto;scrollbar-width:none;position:relative;
+    padding:0 12px;
+  }
+  .nav-inner::-webkit-scrollbar{display:none}
+  .tab{
+    flex:none;min-width:58px;
+    padding:10px 10px 9px;
+    text-align:center;position:relative;
+    color:var(--mute);
+    transition:color .2s;
+  }
+  .tab .d{display:block;font-size:11px;letter-spacing:.08em}
+  .tab .n{display:block;font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.3}
+  .tab::after{
+    content:"";position:absolute;left:14px;right:14px;bottom:0;height:2px;
+    background:var(--indigo);transform:scaleX(0);transition:transform .25s;
+  }
+  .tab[aria-selected="true"]{color:var(--ink)}
+  .tab[aria-selected="true"]::after{transform:scaleX(1)}
+
+  /* ---------- Panel ---------- */
+  main{max-width:640px;margin:0 auto;padding:0 20px 56px}
+  .js .panel:not(.active){display:none}
+  html:not(.js) .nav{display:none}
+  html:not(.js) .panel{margin-bottom:24px}
+  html:not(.js) .pager{display:none}
+  .day-head{
+    display:flex;justify-content:space-between;align-items:stretch;
+    padding:28px 0 22px;border-bottom:1px solid var(--line);
+  }
+  .day-head .meta{display:flex;flex-direction:column;justify-content:space-between;gap:14px}
+  .day-head .date{font-size:13px;color:var(--mute);letter-spacing:.1em}
+  .day-head h2{font-family:var(--serif);font-size:24px;line-height:1.4;font-weight:700;letter-spacing:.04em}
+  .stay{font-size:13px;color:var(--mute)}
+  .stay a{
+    color:var(--indigo);text-decoration:none;border-bottom:1px solid currentColor;
+  }
+  .area{
+    writing-mode:vertical-rl;
+    font-family:var(--serif);font-weight:700;
+    font-size:54px;line-height:1;letter-spacing:.12em;
+    color:var(--wash);
+    -webkit-text-stroke:1px var(--line);
+    user-select:none;
+  }
+
+  /* ---------- Timeline ---------- */
+  .timeline{list-style:none;position:relative;padding:8px 0 0}
+  .item{
+    display:grid;grid-template-columns:58px 1fr;gap:0 14px;
+    position:relative;padding:20px 0 4px;
+  }
+  .time{
+    text-align:right;font-variant-numeric:tabular-nums;
+    font-size:15px;font-weight:500;line-height:1.4;padding-top:3px;
+  }
+  .time small{display:block;font-size:12px;font-weight:400;color:var(--mute)}
+  .body{
+    position:relative;padding:0 0 22px 22px;
+    border-left:1px solid var(--line);
+  }
+  .item:last-child .body{border-left-color:transparent}
+  .body::before{
+    content:"";position:absolute;left:-5px;top:8px;
+    width:9px;height:9px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--indigo);
+  }
+  .item[data-type="餐食"] .body::before{border-color:var(--moss)}
+  .item[data-type="住宿"] .body::before{border-color:var(--hanko)}
+  .item[data-tbd="1"] .body::before{border-style:dashed;border-color:var(--mute)}
+
+  .type{font-size:12px;color:var(--mute);margin-bottom:2px;letter-spacing:.06em}
+  .item[data-type="餐食"] .type{color:var(--moss)}
+  .item[data-type="景點"] .type{color:var(--indigo)}
+  .item[data-type="住宿"] .type{color:var(--hanko)}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:14px 16px 14px;
+  }
+  .item[data-tbd="1"] .card{background:transparent;border-style:dashed}
+  .card h3{font-family:var(--serif);font-size:17px;line-height:1.45;font-weight:700;letter-spacing:.02em}
+  .card p{margin-top:6px;font-size:14px;color:#46515A}
+  .note{
+    margin-top:10px;padding:8px 10px;font-size:12.5px;line-height:1.6;
+    background:var(--wash);border-radius:3px;color:#46515A;
+  }
+  .steps{margin-top:8px;padding-left:0;list-style:none;font-size:14px;color:#46515A}
+  .steps li{padding:2px 0 2px 16px;position:relative}
+  .steps li::before{content:"";position:absolute;left:2px;top:.95em;width:6px;height:1px;background:var(--mute)}
+
+  .go{
+    display:inline-flex;align-items:center;gap:6px;
+    margin-top:12px;padding:7px 12px;
+    font-size:13px;text-decoration:none;color:var(--indigo);
+    border:1px solid var(--indigo);border-radius:999px;
+    transition:background .2s,color .2s;
+  }
+  .go:hover,.go:active{background:var(--indigo);color:#fff}
+  .go svg{width:14px;height:14px;flex:none}
+  .go.quiet{color:var(--mute);border-color:var(--line)}
+  .go.quiet:hover,.go.quiet:active{background:var(--mute);color:#fff;border-color:var(--mute)}
+
+  /* ---------- Pager ---------- */
+  .pager{display:flex;justify-content:space-between;gap:12px;margin-top:12px;padding-top:20px;border-top:1px solid var(--line)}
+  .pager button{
+    flex:1;padding:12px 10px;border:1px solid var(--line);border-radius:4px;background:var(--card);
+    font-size:14px;color:var(--ink);
+  }
+  .pager button:disabled{opacity:.35;cursor:default}
+  .pager button:not(:disabled):active{background:var(--wash)}
+
+  /* ---------- Info panel ---------- */
+  .block{padding:26px 0 6px}
+  .block h2{font-family:var(--serif);font-size:20px;font-weight:700;margin-bottom:12px;letter-spacing:.04em}
+  .block ul{list-style:none}
+  .block li{padding:10px 0;border-bottom:1px solid var(--line);font-size:14.5px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+  .block li:last-child{border-bottom:0}
+  .block li span.t{flex:1}
+  .block .plain li{display:block;position:relative;padding-left:18px}
+  .block .plain li::before{content:"";position:absolute;left:2px;top:1.15em;width:7px;height:7px;border:1.5px solid var(--moss);border-radius:50%}
+  .mini{
+    flex:none;font-size:12.5px;text-decoration:none;color:var(--indigo);
+    border-bottom:1px solid currentColor;padding:2px 0;
+  }
+  .overview{display:grid;gap:0;border:1px solid var(--line);border-radius:4px;background:var(--card);margin-top:24px}
+  .overview div{padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px}
+  .overview div:last-child{border-bottom:0}
+  .overview dt{font-size:12px;color:var(--mute);margin-bottom:2px}
+  .memo{
+    margin-top:28px;padding:22px 20px;text-align:center;
+    font-family:var(--serif);font-size:16px;line-height:2;letter-spacing:.08em;
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+  }
+
+  footer{max-width:640px;margin:0 auto;padding:0 20px 40px;text-align:center;font-size:12px;color:var(--mute);letter-spacing:.1em}
+
+  @media (prefers-reduced-motion:no-preference){
+    .panel.enter .item{animation:fade .35s ease both}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *{transition:none!important;animation:none!important}
+  }
+  @media (min-width:520px){
+    .hero h1{font-size:42px}
+    .area{font-size:68px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div>
+    <span class="year">2027</span>
+    <h1>京都<br>北陸自由行</h1>
+    <p class="range">1/22（五）— 1/27（三）　6 天 5 夜</p>
+    <p class="count" id="count" hidden>距離出發還有 <b id="days">0</b> 天</p>
+  </div>
+  <div class="hanko" aria-hidden="true">親子<br>同樂</div>
+</header>
+
+<nav class="nav" aria-label="行程天數">
+  <div class="nav-inner" role="tablist" id="tabs"><button class="tab" role="tab" id="t0" aria-controls="p0" aria-selected="false" data-i="0"><span class="d">1/22（五）</span><span class="n">第一天</span></button><button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="false" data-i="1"><span class="d">1/23（六）</span><span class="n">第二天</span></button><button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" data-i="2"><span class="d">1/24（日）</span><span class="n">第三天</span></button><button class="tab" role="tab" id="t3" aria-controls="p3" aria-selected="false" data-i="3"><span class="d">1/25（一）</span><span class="n">第四天</span></button><button class="tab" role="tab" id="t4" aria-controls="p4" aria-selected="false" data-i="4"><span class="d">1/26（二）</span><span class="n">第五天</span></button><button class="tab" role="tab" id="t5" aria-controls="p5" aria-selected="false" data-i="5"><span class="d">1/27（三）</span><span class="n">第六天</span></button><button class="tab" role="tab" id="t6" aria-controls="p6" aria-selected="false" data-i="6"><span class="d">行前</span><span class="n">資訊</span></button></div>
+</nav>
+
+<main id="main"><section class="panel" id="p0" role="tabpanel" aria-labelledby="t0"><div class="day-head"><div class="meta"><div><p class="date">1/22（五）　第 1 天</p><h2>飛往關西，抵達金澤</h2></div><p class="stay">住宿：<a href="https://www.google.com/maps/search/?api=1&query=KOKO%20HOTEL%20Kanazawa%20Ekimae" target="_blank" rel="noopener">金澤站前 KOKO 飯店</a></p></div><div class="area" aria-hidden="true">金澤</div></div><ol class="timeline"><li class="item" data-type="交通"><div class="time">07:00<small>10:45</small></div><div class="body"><div class="type">交通</div><div class="card"><h3>包車到高雄小港機場，飛往關西機場</h3><p>華榮接送包車，從高雄出發，搭機前往關西機場。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Kaohsiung%20International%20Airport" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>高雄小港機場</a></div></div></li><li class="item" data-type="交通"><div class="time">上午</div><div class="body"><div class="type">交通</div><div class="card"><h3>關西機場 → 京都 → 金澤站</h3><ul class="steps"><li>出海關後，先換領 JR PASS</li><li>搭關西特快 haruka 到京都</li><li>轉搭特急列車（原圖文字不清，疑為雷鳥號到敦賀）</li><li>再轉北陸新幹線到金澤站</li></ul><div class="note">轉乘的特急名稱與站名請出發前再用 JR 時刻表確認；新幹線建議提早預約座位。</div><a class="go" href="https://www.google.com/maps/search/?api=1&query=Kanazawa%20Station" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>金澤站</a></div></div></li><li class="item" data-type="餐食"><div class="time">12:00<small>13:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>機場覓食</h3><p>在關西機場先吃點東西，再開始長途移動。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Kansai%20International%20Airport%20restaurants" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>機場餐廳</a></div></div></li><li class="item" data-type="交通"><div class="time">13:00<small>15:00</small></div><div class="body"><div class="type">交通</div><div class="card"><h3>移動中</h3><p>搭車前往金澤，可以在車上休息、整理照片。</p></div></div></li><li class="item" data-type="住宿"><div class="time">15:00<small>18:00</small></div><div class="body"><div class="type">住宿</div><div class="card"><h3>飯店報到・車站附近逛街</h3><p>先到金澤站前 KOKO 飯店辦理入住，再到車站周邊逛逛、找點小吃。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=KOKO%20HOTEL%20Kanazawa%20Ekimae" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>飯店導航</a></div></div></li><li class="item" data-type="餐食"><div class="time">18:00<small>19:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>肉匠 Jade 金澤</h3><p>第一晚的晚餐，吃肉犒賞一路奔波。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E8%82%89%E5%8C%A0%20Jade%20%E9%87%91%E6%B2%A2" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>餐廳導航</a></div></div></li><li class="item" data-type="住宿"><div class="time">19:00<small>22:45</small></div><div class="body"><div class="type">住宿</div><div class="card"><h3>回飯店休息</h3><p>早點休息，明天要出門去福井。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=KOKO%20HOTEL%20Kanazawa%20Ekimae" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>飯店導航</a></div></div></li></ol><div class="pager"><button data-dir="-1" disabled>前一天</button><button data-dir="1">下一天</button></div></section><section class="panel" id="p1" role="tabpanel" aria-labelledby="t1"><div class="day-head"><div class="meta"><div><p class="date">1/23（六）　第 2 天</p><h2>福井恐龍博物館</h2></div><p class="stay">住宿：<a href="https://www.google.com/maps/search/?api=1&query=KOKO%20HOTEL%20Kanazawa%20Ekimae" target="_blank" rel="noopener">金澤站前 KOKO 飯店</a></p></div><div class="area" aria-hidden="true">福井</div></div><ol class="timeline"><li class="item" data-type="餐食"><div class="time">07:00<small>08:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>早餐：自行購買</h3><p>在飯店附近的便利商店或車站買早餐。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=convenience%20store%20near%20Kanazawa%20Station" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>附近超商</a></div></div></li><li class="item" data-type="交通"><div class="time">08:00<small>12:00</small></div><div class="body"><div class="type">交通</div><div class="card"><h3>新幹線到福井，轉私鐵接送車</h3><ul class="steps"><li>搭北陸新幹線到福井</li><li>轉搭私鐵接駁車</li><li>前往福井縣立恐龍博物館</li></ul><a class="go" href="https://www.google.com/maps/search/?api=1&query=Fukui%20Station" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>福井站</a></div></div></li><li class="item" data-type="餐食"><div class="time">12:00<small>13:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>午餐：自帶食物或館內餐廳</h3><p>可以從早上先買好簡餐帶著，或直接在博物館內用餐。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Fukui%20Prefectural%20Dinosaur%20Museum" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>博物館導航</a></div></div></li><li class="item" data-type="景點"><div class="time">13:00<small>18:00</small></div><div class="body"><div class="type">景點</div><div class="card"><h3>福井縣立恐龍博物館</h3><p>日本代表性的恐龍博物館，有大量骨骼化石與動態展示，很適合親子一起慢慢逛。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Fukui%20Prefectural%20Dinosaur%20Museum" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Google 導航</a></div></div></li><li class="item" data-type="餐食" data-tbd="1"><div class="time">18:00<small>19:00</small></div><div class="body"><div class="type">餐食・未定</div><div class="card"><h3>晚餐：未定</h3><p>回到金澤後再決定，可以先搜尋車站附近餐廳。</p><a class="go quiet" href="https://www.google.com/maps/search/?api=1&query=restaurants%20near%20Kanazawa%20Station" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>搜尋附近餐廳</a></div></div></li><li class="item" data-type="住宿"><div class="time">19:00<small>22:45</small></div><div class="body"><div class="type">住宿</div><div class="card"><h3>回飯店休息</h3><p>整理今天的照片，早點睡。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=KOKO%20HOTEL%20Kanazawa%20Ekimae" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>飯店導航</a></div></div></li></ol><div class="pager"><button data-dir="-1">前一天</button><button data-dir="1">下一天</button></div></section><section class="panel" id="p2" role="tabpanel" aria-labelledby="t2"><div class="day-head"><div class="meta"><div><p class="date">1/24（日）　第 3 天</p><h2>金澤市區散步</h2></div><p class="stay">住宿：<a href="https://www.google.com/maps/search/?api=1&query=KOKO%20HOTEL%20Kanazawa%20Ekimae" target="_blank" rel="noopener">金澤站前 KOKO 飯店</a></p></div><div class="area" aria-hidden="true">茶屋</div></div><ol class="timeline"><li class="item" data-type="餐食"><div class="time">07:00<small>08:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>早餐：近江町市場</h3><p>金澤人的廚房，以海鮮聞名，早餐就能吃到新鮮海產。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Omicho%20Market%20Kanazawa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Google 導航</a></div></div></li><li class="item" data-type="景點"><div class="time">08:00<small>12:00</small></div><div class="body"><div class="type">景點</div><div class="card"><h3>循環巴士到東茶屋街</h3><p>保留江戶時代格子窗町家的茶屋街，適合拍照、散步，還有金箔冰淇淋可以嘗。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Higashi%20Chaya%20District%20Kanazawa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Google 導航</a></div></div></li><li class="item" data-type="餐食"><div class="time">12:00<small>13:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>博多もつ鍋龍串勝總</h3><p>午餐吃博多風味的牛雜鍋與串燒。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E5%8D%9A%E5%A4%9A%E3%82%82%E3%81%A4%E9%8D%8B%20%E9%BE%8D%E4%B8%B2%E5%8B%9D%E7%B8%BD" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>餐廳導航</a></div></div></li><li class="item" data-type="景點"><div class="time">13:00<small>18:00</small></div><div class="body"><div class="type">景點</div><div class="card"><h3>兼六園・石川縣觀光物產館</h3><p>兼六園是日本三大名園之一，園內有霞ヶ池與徽軫燈籠。逛完可到物產館選購伴手禮。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Kenrokuen%20Garden" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>兼六園導航</a> <a class="go" href="https://www.google.com/maps/search/?api=1&query=%E7%9F%B3%E5%B7%9D%E7%9C%8C%E8%A6%B3%E5%85%89%E7%89%A9%E7%94%A3%E9%A4%A8" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>石川縣觀光物產館</a></div></div></li><li class="item" data-type="餐食" data-tbd="1"><div class="time">18:00<small>19:00</small></div><div class="body"><div class="type">餐食・未定</div><div class="card"><h3>晚餐：未定</h3><p>尚未決定，可以先搜尋金澤站周邊餐廳。</p><a class="go quiet" href="https://www.google.com/maps/search/?api=1&query=restaurants%20near%20Kanazawa%20Station" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>搜尋附近餐廳</a></div></div></li><li class="item" data-type="住宿"><div class="time">19:00<small>22:45</small></div><div class="body"><div class="type">住宿</div><div class="card"><h3>回飯店休息</h3><p>明天要退房前往京都，行李先整理好。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=KOKO%20HOTEL%20Kanazawa%20Ekimae" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>飯店導航</a></div></div></li></ol><div class="pager"><button data-dir="-1">前一天</button><button data-dir="1">下一天</button></div></section><section class="panel" id="p3" role="tabpanel" aria-labelledby="t3"><div class="day-head"><div class="meta"><div><p class="date">1/25（一）　第 4 天</p><h2>金澤退房，前往京都</h2></div><p class="stay">住宿：<a href="https://www.google.com/maps/search/?api=1&query=Holiday%20Inn%20Express%20Kyoto%20Shijo%20Omiya" target="_blank" rel="noopener">京都四條大宮 智選飯店</a></p></div><div class="area" aria-hidden="true">京都</div></div><ol class="timeline"><li class="item" data-type="餐食"><div class="time">07:00<small>08:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>早餐：自行購買</h3><p>簡單吃，準備退房。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=convenience%20store%20near%20Kanazawa%20Station" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>附近超商</a></div></div></li><li class="item" data-type="景點"><div class="time">08:00<small>12:00</small></div><div class="body"><div class="type">景點</div><div class="card"><h3>長町武家屋敷跡或 21 世紀美術館</h3><p>先退房、寄放行李，再搭循環巴士。長町武家屋敷跡保留土牆與石板路；21 世紀美術館是圓形的現代美術館，兩處二選一。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Nagamachi%20Samurai%20District%20Kanazawa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>長町武家屋敷跡</a> <a class="go" href="https://www.google.com/maps/search/?api=1&query=21st%20Century%20Museum%20of%20Contemporary%20Art%2C%20Kanazawa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>21 世紀美術館</a></div></div></li><li class="item" data-type="餐食" data-tbd="1"><div class="time">12:00<small>13:00</small></div><div class="body"><div class="type">餐食・未定</div><div class="card"><h3>午餐：未定</h3><p>尚未決定。</p><a class="go quiet" href="https://www.google.com/maps/search/?api=1&query=restaurants%20near%20Kanazawa%20Station" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>搜尋附近餐廳</a></div></div></li><li class="item" data-type="交通"><div class="time">13:00<small>18:00</small></div><div class="body"><div class="type">交通</div><div class="card"><h3>下午逛街後搭車到京都</h3><p>逛完街後取回寄放的行李，搭車前往京都。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Kyoto%20Station" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>京都站</a></div></div></li><li class="item" data-type="餐食" data-tbd="1"><div class="time">18:00<small>19:00</small></div><div class="body"><div class="type">餐食・未定</div><div class="card"><h3>晚餐：未定</h3><p>抵達京都後再決定，可搜尋四條大宮周邊。</p><a class="go quiet" href="https://www.google.com/maps/search/?api=1&query=restaurants%20near%20Shijo%20Omiya%20Kyoto" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>搜尋附近餐廳</a></div></div></li><li class="item" data-type="住宿"><div class="time">19:00<small>22:45</small></div><div class="body"><div class="type">住宿</div><div class="card"><h3>飯店休息或市區逛街</h3><p>入住京都四條大宮智選飯店，體力夠的話再到市區走走。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Holiday%20Inn%20Express%20Kyoto%20Shijo%20Omiya" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>飯店導航</a></div></div></li></ol><div class="pager"><button data-dir="-1">前一天</button><button data-dir="1">下一天</button></div></section><section class="panel" id="p4" role="tabpanel" aria-labelledby="t4"><div class="day-head"><div class="meta"><div><p class="date">1/26（二）　第 5 天</p><h2>和服拍照與北野天滿宮</h2></div><p class="stay">住宿：<a href="https://www.google.com/maps/search/?api=1&query=Holiday%20Inn%20Express%20Kyoto%20Shijo%20Omiya" target="_blank" rel="noopener">京都四條大宮 智選飯店</a></p></div><div class="area" aria-hidden="true">和服</div></div><ol class="timeline"><li class="item" data-type="餐食"><div class="time">07:00<small>08:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>早餐：自行購買</h3><p>簡單吃，準備換和服。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=convenience%20store%20near%20Shijo%20Omiya%20Kyoto" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>附近超商</a></div></div></li><li class="item" data-type="景點"><div class="time">08:00<small>12:00</small></div><div class="body"><div class="type">景點</div><div class="card"><h3>穿和服、化妝，跟攝影師拍照</h3><p>今天的重頭戲：換上和服、做造型，請攝影師為全家拍下紀念照。</p><div class="note">原圖沒有標示店家，確定店家後可自行在這裡補上地址。</div><a class="go quiet" href="https://www.google.com/maps/search/?api=1&query=kimono%20rental%20Kyoto" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>搜尋和服店</a></div></div></li><li class="item" data-type="餐食" data-tbd="1"><div class="time">12:00<small>13:00</small></div><div class="body"><div class="type">餐食・未定</div><div class="card"><h3>午餐：未定</h3><p>尚未決定。</p><a class="go quiet" href="https://www.google.com/maps/search/?api=1&query=restaurants%20near%20Kitano%20Tenmangu" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>搜尋附近餐廳</a></div></div></li><li class="item" data-type="景點"><div class="time">13:00<small>18:00</small></div><div class="body"><div class="type">景點</div><div class="card"><h3>北野天滿宮：祈福・參拜</h3><p>供奉學問之神菅原道真的神社，是京都著名的祈願與賞梅名所。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Kitano%20Tenmangu" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Google 導航</a></div></div></li><li class="item" data-type="餐食" data-tbd="1"><div class="time">18:00<small>19:00</small></div><div class="body"><div class="type">餐食・未定</div><div class="card"><h3>晚餐：未定</h3><p>尚未決定。</p><a class="go quiet" href="https://www.google.com/maps/search/?api=1&query=restaurants%20near%20Shijo%20Omiya%20Kyoto" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>搜尋附近餐廳</a></div></div></li><li class="item" data-type="住宿"><div class="time">19:00<small>22:45</small></div><div class="body"><div class="type">住宿</div><div class="card"><h3>飯店休息或市區逛街</h3><p>最後一個完整夜晚，可以到市區逛街買伴手禮。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Holiday%20Inn%20Express%20Kyoto%20Shijo%20Omiya" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>飯店導航</a></div></div></li></ol><div class="pager"><button data-dir="-1">前一天</button><button data-dir="1">下一天</button></div></section><section class="panel" id="p5" role="tabpanel" aria-labelledby="t5"><div class="day-head"><div class="meta"><div><p class="date">1/27（三）　第 6 天</p><h2>太秦映畫村，搭機回家</h2></div><p class="stay">今晚回到家</p></div><div class="area" aria-hidden="true">歸途</div></div><ol class="timeline"><li class="item" data-type="餐食"><div class="time">07:00<small>08:00</small></div><div class="body"><div class="type">餐食</div><div class="card"><h3>早餐：客美多咖啡大宮</h3><p>日式純喫茶連鎖，點飲料常附贈吐司或小點心。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Komeda%20Coffee%20Kyoto%20Omiya" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Google 導航</a></div></div></li><li class="item" data-type="景點"><div class="time">08:00<small>12:00</small></div><div class="body"><div class="type">景點</div><div class="card"><h3>逛太秦映畫村</h3><p>以時代劇拍攝場景改建的主題園區，有江戶街景與體驗活動。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Toei%20Kyoto%20Studio%20Park" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Google 導航</a></div></div></li><li class="item" data-type="餐食" data-tbd="1"><div class="time">12:00<small>13:00</small></div><div class="body"><div class="type">餐食・未定</div><div class="card"><h3>午餐：未定</h3><p>尚未決定。</p><a class="go quiet" href="https://www.google.com/maps/search/?api=1&query=restaurants%20near%20Toei%20Kyoto%20Studio%20Park" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>搜尋附近餐廳</a></div></div></li><li class="item" data-type="交通"><div class="time">13:00<small>18:00</small></div><div class="body"><div class="type">交通</div><div class="card"><h3>搭 haruka 到關西機場，臨空城逛街</h3><p>搭關西特快 haruka 前往關西機場，利用等待時間到臨空城逛街、買最後的伴手禮。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Rinku%20Town%20Osaka" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>臨空城</a></div></div></li><li class="item" data-type="交通"><div class="time">20:10<small>22:45</small></div><div class="body"><div class="type">交通</div><div class="card"><h3>關西機場 → 高雄小港機場</h3><p>搭機返回高雄，結束這趟旅程。</p><a class="go" href="https://www.google.com/maps/search/?api=1&query=Kansai%20International%20Airport" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>關西機場</a></div></div></li></ol><div class="pager"><button data-dir="-1">前一天</button><button data-dir="1">行前資訊</button></div></section><section class="panel" id="p6" role="tabpanel" aria-labelledby="t6"><dl class="overview"><div><dt>往返</dt><dd>高雄小港機場 ⇄ 關西機場（包車：華榮接送）</dd></div><div><dt>住宿</dt><dd>1/22–1/24 金澤站前 KOKO 飯店<br>1/25–1/26 京都四條大宮 智選飯店</dd></div><div><dt>交通方式</dt><dd>新幹線、關西特快 haruka、循環巴士、私鐵、公車</dd></div></dl><div class="block"><h2>交通小提醒</h2><ul class="plain"><li>善用 JR PASS（關西＆北陸地區）節省交通費</li><li>新幹線需事先劃位，建議提早預約</li><li>北陸地區冬季可能下雪，注意保暖、鞋底防滑</li><li>行程彈性安排，依天氣與體力調整</li></ul></div><div class="block"><h2>必吃美食</h2><ul><li><span class="t">近江町市場海鮮丼</span><a class="mini" href="https://www.google.com/maps/search/?api=1&query=Omicho%20Market%20Kanazawa" target="_blank" rel="noopener">地圖</a></li><li><span class="t">博多もつ鍋龍串勝總</span><a class="mini" href="https://www.google.com/maps/search/?api=1&query=%E5%8D%9A%E5%A4%9A%E3%82%82%E3%81%A4%E9%8D%8B%20%E9%BE%8D%E4%B8%B2%E5%8B%9D%E7%B8%BD" target="_blank" rel="noopener">地圖</a></li><li><span class="t">金澤金箔冰淇淋</span><a class="mini" href="https://www.google.com/maps/search/?api=1&query=gold%20leaf%20ice%20cream%20Higashi%20Chaya%20Kanazawa" target="_blank" rel="noopener">地圖</a></li><li><span class="t">肉匠 Jade 金澤</span><a class="mini" href="https://www.google.com/maps/search/?api=1&query=%E8%82%89%E5%8C%A0%20Jade%20%E9%87%91%E6%B2%A2" target="_blank" rel="noopener">地圖</a></li><li><span class="t">客美多早餐咖啡</span><a class="mini" href="https://www.google.com/maps/search/?api=1&query=Komeda%20Coffee%20Kyoto%20Omiya" target="_blank" rel="noopener">地圖</a></li></ul></div><div class="memo">慢慢玩、好好拍、開心吃<br>期待親子一起創造美好的回憶</div><div class="pager"><button data-dir="-1">回到第 6 天</button><button disabled>最後一頁</button></div></section></main>
+
+<footer>慢慢玩、好好拍、開心吃</footer>
+
+<script>
+/* ============ 行程資料 ============ */
+const gm = q => "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+
+const HOTEL_KANAZAWA = { name: "金澤站前 KOKO 飯店", q: "KOKO HOTEL Kanazawa Ekimae" };
+const HOTEL_KYOTO    = { name: "京都四條大宮 智選飯店", q: "Holiday Inn Express Kyoto Shijo Omiya" };
+
+const DAYS = [
+  {
+    date: "1/22", wd: "五", tab: "出發",
+    title: "飛往關西，抵達金澤",
+    area: "金澤",
+    stay: HOTEL_KANAZAWA,
+    items: [
+      { time: "07:00", end: "10:45", type: "交通", name: "包車到高雄小港機場，飛往關西機場",
+        desc: "華榮接送包車，從高雄出發，搭機前往關西機場。", map: "Kaohsiung International Airport", mapLabel: "高雄小港機場" },
+      { time: "上午", type: "交通", name: "關西機場 → 京都 → 金澤站",
+        steps: [
+          "出海關後，先換領 JR PASS",
+          "搭關西特快 haruka 到京都",
+          "轉搭特急列車（原圖文字不清，疑為雷鳥號到敦賀）",
+          "再轉北陸新幹線到金澤站"
+        ],
+        note: "轉乘的特急名稱與站名請出發前再用 JR 時刻表確認；新幹線建議提早預約座位。",
+        map: "Kanazawa Station", mapLabel: "金澤站" },
+      { time: "12:00", end: "13:00", type: "餐食", name: "機場覓食",
+        desc: "在關西機場先吃點東西，再開始長途移動。", map: "Kansai International Airport restaurants", mapLabel: "機場餐廳" },
+      { time: "13:00", end: "15:00", type: "交通", name: "移動中",
+        desc: "搭車前往金澤，可以在車上休息、整理照片。" },
+      { time: "15:00", end: "18:00", type: "住宿", name: "飯店報到・車站附近逛街",
+        desc: "先到金澤站前 KOKO 飯店辦理入住，再到車站周邊逛逛、找點小吃。", map: HOTEL_KANAZAWA.q, mapLabel: "飯店導航" },
+      { time: "18:00", end: "19:00", type: "餐食", name: "肉匠 Jade 金澤",
+        desc: "第一晚的晚餐，吃肉犒賞一路奔波。", map: "肉匠 Jade 金沢", mapLabel: "餐廳導航" },
+      { time: "19:00", end: "22:45", type: "住宿", name: "回飯店休息",
+        desc: "早點休息，明天要出門去福井。", map: HOTEL_KANAZAWA.q, mapLabel: "飯店導航" }
+    ]
+  },
+  {
+    date: "1/23", wd: "六", tab: "恐龍",
+    title: "福井恐龍博物館",
+    area: "福井",
+    stay: HOTEL_KANAZAWA,
+    items: [
+      { time: "07:00", end: "08:00", type: "餐食", name: "早餐：自行購買",
+        desc: "在飯店附近的便利商店或車站買早餐。", map: "convenience store near Kanazawa Station", mapLabel: "附近超商" },
+      { time: "08:00", end: "12:00", type: "交通", name: "新幹線到福井，轉私鐵接送車",
+        steps: ["搭北陸新幹線到福井", "轉搭私鐵接駁車", "前往福井縣立恐龍博物館"],
+        map: "Fukui Station", mapLabel: "福井站" },
+      { time: "12:00", end: "13:00", type: "餐食", name: "午餐：自帶食物或館內餐廳",
+        desc: "可以從早上先買好簡餐帶著，或直接在博物館內用餐。", map: "Fukui Prefectural Dinosaur Museum", mapLabel: "博物館導航" },
+      { time: "13:00", end: "18:00", type: "景點", name: "福井縣立恐龍博物館",
+        desc: "日本代表性的恐龍博物館，有大量骨骼化石與動態展示，很適合親子一起慢慢逛。", map: "Fukui Prefectural Dinosaur Museum", mapLabel: "Google 導航" },
+      { time: "18:00", end: "19:00", type: "餐食", name: "晚餐：未定", tbd: true,
+        desc: "回到金澤後再決定，可以先搜尋車站附近餐廳。", map: "restaurants near Kanazawa Station", mapLabel: "搜尋附近餐廳", quiet: true },
+      { time: "19:00", end: "22:45", type: "住宿", name: "回飯店休息",
+        desc: "整理今天的照片，早點睡。", map: HOTEL_KANAZAWA.q, mapLabel: "飯店導航" }
+    ]
+  },
+  {
+    date: "1/24", wd: "日", tab: "金澤",
+    title: "金澤市區散步",
+    area: "茶屋",
+    stay: HOTEL_KANAZAWA,
+    items: [
+      { time: "07:00", end: "08:00", type: "餐食", name: "早餐：近江町市場",
+        desc: "金澤人的廚房，以海鮮聞名，早餐就能吃到新鮮海產。", map: "Omicho Market Kanazawa", mapLabel: "Google 導航" },
+      { time: "08:00", end: "12:00", type: "景點", name: "循環巴士到東茶屋街",
+        desc: "保留江戶時代格子窗町家的茶屋街，適合拍照、散步，還有金箔冰淇淋可以嘗。", map: "Higashi Chaya District Kanazawa", mapLabel: "Google 導航" },
+      { time: "12:00", end: "13:00", type: "餐食", name: "博多もつ鍋龍串勝總",
+        desc: "午餐吃博多風味的牛雜鍋與串燒。", map: "博多もつ鍋 龍串勝總", mapLabel: "餐廳導航" },
+      { time: "13:00", end: "18:00", type: "景點", name: "兼六園・石川縣觀光物產館",
+        desc: "兼六園是日本三大名園之一，園內有霞ヶ池與徽軫燈籠。逛完可到物產館選購伴手禮。", map: "Kenrokuen Garden", mapLabel: "兼六園導航",
+        extra: [{ label: "石川縣觀光物產館", q: "石川県観光物産館" }] },
+      { time: "18:00", end: "19:00", type: "餐食", name: "晚餐：未定", tbd: true,
+        desc: "尚未決定，可以先搜尋金澤站周邊餐廳。", map: "restaurants near Kanazawa Station", mapLabel: "搜尋附近餐廳", quiet: true },
+      { time: "19:00", end: "22:45", type: "住宿", name: "回飯店休息",
+        desc: "明天要退房前往京都，行李先整理好。", map: HOTEL_KANAZAWA.q, mapLabel: "飯店導航" }
+    ]
+  },
+  {
+    date: "1/25", wd: "一", tab: "移動",
+    title: "金澤退房，前往京都",
+    area: "京都",
+    stay: HOTEL_KYOTO,
+    items: [
+      { time: "07:00", end: "08:00", type: "餐食", name: "早餐：自行購買",
+        desc: "簡單吃，準備退房。", map: "convenience store near Kanazawa Station", mapLabel: "附近超商" },
+      { time: "08:00", end: "12:00", type: "景點", name: "長町武家屋敷跡或 21 世紀美術館",
+        desc: "先退房、寄放行李，再搭循環巴士。長町武家屋敷跡保留土牆與石板路；21 世紀美術館是圓形的現代美術館，兩處二選一。", map: "Nagamachi Samurai District Kanazawa", mapLabel: "長町武家屋敷跡",
+        extra: [{ label: "21 世紀美術館", q: "21st Century Museum of Contemporary Art, Kanazawa" }] },
+      { time: "12:00", end: "13:00", type: "餐食", name: "午餐：未定", tbd: true,
+        desc: "尚未決定。", map: "restaurants near Kanazawa Station", mapLabel: "搜尋附近餐廳", quiet: true },
+      { time: "13:00", end: "18:00", type: "交通", name: "下午逛街後搭車到京都",
+        desc: "逛完街後取回寄放的行李，搭車前往京都。", map: "Kyoto Station", mapLabel: "京都站" },
+      { time: "18:00", end: "19:00", type: "餐食", name: "晚餐：未定", tbd: true,
+        desc: "抵達京都後再決定，可搜尋四條大宮周邊。", map: "restaurants near Shijo Omiya Kyoto", mapLabel: "搜尋附近餐廳", quiet: true },
+      { time: "19:00", end: "22:45", type: "住宿", name: "飯店休息或市區逛街",
+        desc: "入住京都四條大宮智選飯店，體力夠的話再到市區走走。", map: HOTEL_KYOTO.q, mapLabel: "飯店導航" }
+    ]
+  },
+  {
+    date: "1/26", wd: "二", tab: "和服",
+    title: "和服拍照與北野天滿宮",
+    area: "和服",
+    stay: HOTEL_KYOTO,
+    items: [
+      { time: "07:00", end: "08:00", type: "餐食", name: "早餐：自行購買",
+        desc: "簡單吃，準備換和服。", map: "convenience store near Shijo Omiya Kyoto", mapLabel: "附近超商" },
+      { time: "08:00", end: "12:00", type: "景點", name: "穿和服、化妝，跟攝影師拍照",
+        desc: "今天的重頭戲：換上和服、做造型，請攝影師為全家拍下紀念照。", note: "原圖沒有標示店家，確定店家後可自行在這裡補上地址。",
+        map: "kimono rental Kyoto", mapLabel: "搜尋和服店", quiet: true },
+      { time: "12:00", end: "13:00", type: "餐食", name: "午餐：未定", tbd: true,
+        desc: "尚未決定。", map: "restaurants near Kitano Tenmangu", mapLabel: "搜尋附近餐廳", quiet: true },
+      { time: "13:00", end: "18:00", type: "景點", name: "北野天滿宮：祈福・參拜",
+        desc: "供奉學問之神菅原道真的神社，是京都著名的祈願與賞梅名所。", map: "Kitano Tenmangu", mapLabel: "Google 導航" },
+      { time: "18:00", end: "19:00", type: "餐食", name: "晚餐：未定", tbd: true,
+        desc: "尚未決定。", map: "restaurants near Shijo Omiya Kyoto", mapLabel: "搜尋附近餐廳", quiet: true },
+      { time: "19:00", end: "22:45", type: "住宿", name: "飯店休息或市區逛街",
+        desc: "最後一個完整夜晚，可以到市區逛街買伴手禮。", map: HOTEL_KYOTO.q, mapLabel: "飯店導航" }
+    ]
+  },
+  {
+    date: "1/27", wd: "三", tab: "返程",
+    title: "太秦映畫村，搭機回家",
+    area: "歸途",
+    stay: null,
+    items: [
+      { time: "07:00", end: "08:00", type: "餐食", name: "早餐：客美多咖啡大宮",
+        desc: "日式純喫茶連鎖，點飲料常附贈吐司或小點心。", map: "Komeda Coffee Kyoto Omiya", mapLabel: "Google 導航" },
+      { time: "08:00", end: "12:00", type: "景點", name: "逛太秦映畫村",
+        desc: "以時代劇拍攝場景改建的主題園區，有江戶街景與體驗活動。", map: "Toei Kyoto Studio Park", mapLabel: "Google 導航" },
+      { time: "12:00", end: "13:00", type: "餐食", name: "午餐：未定", tbd: true,
+        desc: "尚未決定。", map: "restaurants near Toei Kyoto Studio Park", mapLabel: "搜尋附近餐廳", quiet: true },
+      { time: "13:00", end: "18:00", type: "交通", name: "搭 haruka 到關西機場，臨空城逛街",
+        desc: "搭關西特快 haruka 前往關西機場，利用等待時間到臨空城逛街、買最後的伴手禮。", map: "Rinku Town Osaka", mapLabel: "臨空城" },
+      { time: "20:10", end: "22:45", type: "交通", name: "關西機場 → 高雄小港機場",
+        desc: "搭機返回高雄，結束這趟旅程。", map: "Kansai International Airport", mapLabel: "關西機場" }
+    ]
+  }
+];
+
+const INFO = {
+  transport: [
+    "善用 JR PASS（關西＆北陸地區）節省交通費",
+    "新幹線需事先劃位，建議提早預約",
+    "北陸地區冬季可能下雪，注意保暖、鞋底防滑",
+    "行程彈性安排，依天氣與體力調整"
+  ],
+  modes: ["新幹線", "關西特快 haruka", "循環巴士", "私鐵", "公車"],
+  food: [
+    { n: "近江町市場海鮮丼", q: "Omicho Market Kanazawa" },
+    { n: "博多もつ鍋龍串勝總", q: "博多もつ鍋 龍串勝總" },
+    { n: "金澤金箔冰淇淋", q: "gold leaf ice cream Higashi Chaya Kanazawa" },
+    { n: "肉匠 Jade 金澤", q: "肉匠 Jade 金沢" },
+    { n: "客美多早餐咖啡", q: "Komeda Coffee Kyoto Omiya" }
+  ]
+};
+
+/* ============ 渲染 ============ */
+const pin = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+
+const tabsEl = document.getElementById("tabs");
+const mainEl = document.getElementById("main");
+let current = 0;
+
+function btn(label, q, quiet){
+  return '<a class="go' + (quiet ? ' quiet' : '') + '" href="' + gm(q) + '" target="_blank" rel="noopener">' + pin + esc(label) + '</a>';
+}
+
+function itemHTML(it){
+  const time = '<div class="time">' + esc(it.time) + (it.end ? '<small>' + esc(it.end) + '</small>' : '') + '</div>';
+  let inner = '<div class="type">' + esc(it.type) + (it.tbd ? '・未定' : '') + '</div><div class="card"><h3>' + esc(it.name) + '</h3>';
+  if (it.desc) inner += '<p>' + esc(it.desc) + '</p>';
+  if (it.steps) inner += '<ul class="steps">' + it.steps.map(s => '<li>' + esc(s) + '</li>').join("") + '</ul>';
+  if (it.note) inner += '<div class="note">' + esc(it.note) + '</div>';
+  if (it.map) inner += btn(it.mapLabel || "Google Maps 導航", it.map, it.quiet);
+  if (it.extra) it.extra.forEach(e => { inner += ' ' + btn(e.label, e.q); });
+  inner += '</div>';
+  return '<li class="item" data-type="' + esc(it.type) + '"' + (it.tbd ? ' data-tbd="1"' : '') + '>' + time + '<div class="body">' + inner + '</div></li>';
+}
+
+function dayHTML(d, i){
+  const stay = d.stay ? '<p class="stay">住宿：<a href="' + gm(d.stay.q) + '" target="_blank" rel="noopener">' + esc(d.stay.name) + '</a></p>' : '<p class="stay">今晚回到家</p>';
+  return '<section class="panel" id="p' + i + '" role="tabpanel" aria-labelledby="t' + i + '" hidden>' +
+    '<div class="day-head"><div class="meta"><div><p class="date">' + d.date + '（' + d.wd + '）　第 ' + (i+1) + ' 天</p><h2>' + esc(d.title) + '</h2></div>' + stay + '</div>' +
+    '<div class="area" aria-hidden="true">' + esc(d.area) + '</div></div>' +
+    '<ol class="timeline">' + d.items.map(itemHTML).join("") + '</ol>' +
+    '<div class="pager"><button data-dir="-1"' + (i === 0 ? ' disabled' : '') + '>前一天</button><button data-dir="1">' + (i === DAYS.length - 1 ? '行前資訊' : '下一天') + '</button></div>' +
+  '</section>';
+}
+
+function infoHTML(){
+  return '<section class="panel" id="p' + DAYS.length + '" role="tabpanel" aria-labelledby="t' + DAYS.length + '" hidden>' +
+    '<dl class="overview">' +
+      '<div><dt>往返</dt><dd>高雄小港機場 ⇄ 關西機場（包車：華榮接送）</dd></div>' +
+      '<div><dt>住宿</dt><dd>1/22–1/24 金澤站前 KOKO 飯店<br>1/25–1/26 京都四條大宮 智選飯店</dd></div>' +
+      '<div><dt>交通方式</dt><dd>' + INFO.modes.join("、") + '</dd></div>' +
+    '</dl>' +
+    '<div class="block"><h2>交通小提醒</h2><ul class="plain">' + INFO.transport.map(t => '<li>' + esc(t) + '</li>').join("") + '</ul></div>' +
+    '<div class="block"><h2>必吃美食</h2><ul>' + INFO.food.map(f => '<li><span class="t">' + esc(f.n) + '</span><a class="mini" href="' + gm(f.q) + '" target="_blank" rel="noopener">地圖</a></li>').join("") + '</ul></div>' +
+    '<div class="memo">慢慢玩、好好拍、開心吃<br>期待親子一起創造美好的回憶</div>' +
+    '<div class="pager"><button data-dir="-1">回到第 6 天</button><button disabled>最後一頁</button></div>' +
+  '</section>';
+}
+
+function build(){
+  let t = "", p = "";
+  DAYS.forEach((d, i) => {
+    t += '<button class="tab" role="tab" id="t' + i + '" aria-controls="p' + i + '" aria-selected="false" data-i="' + i + '"><span class="d">' + d.date + '（' + d.wd + '）</span><span class="n">第' + "一二三四五六"[i] + '天</span></button>';
+    p += dayHTML(d, i);
+  });
+  t += '<button class="tab" role="tab" id="t' + DAYS.length + '" aria-controls="p' + DAYS.length + '" aria-selected="false" data-i="' + DAYS.length + '"><span class="d">行前</span><span class="n">資訊</span></button>';
+  p += infoHTML();
+  tabsEl.innerHTML = t;
+  mainEl.innerHTML = p;
+}
+
+function show(i, opts){
+  const max = DAYS.length;
+  i = Math.max(0, Math.min(max, i));
+  current = i;
+  document.querySelectorAll(".tab").forEach((el, k) => {
+    const on = k === i;
+    el.setAttribute("aria-selected", on);
+    el.tabIndex = on ? 0 : -1;
+    if (on && !(opts && opts.keepScroll)) {
+      try { tabsEl.scrollTo({ left: el.offsetLeft - (tabsEl.clientWidth - el.offsetWidth) / 2, behavior: "smooth" }); } catch (err) {}
+    }
+  });
+  document.querySelectorAll(".panel").forEach((el, k) => {
+    el.classList.toggle("active", k === i);
+    el.classList.toggle("enter", k === i);
+  });
+  try { history.replaceState(null, "", "#day" + (i + 1)); } catch (err) { /* 預覽環境可能不允許改網址 */ }
+  if (!(opts && opts.keepScroll)) {
+    const navTop = document.querySelector(".nav").offsetTop;
+    if (window.scrollY > navTop) window.scrollTo({ top: navTop, behavior: "smooth" });
+  }
+}
+
+/* 事件 */
+tabsEl.addEventListener("click", e => {
+  const b = e.target.closest(".tab");
+  if (b) show(+b.dataset.i);
+});
+tabsEl.addEventListener("keydown", e => {
+  if (e.key === "ArrowRight") show(current + 1);
+  if (e.key === "ArrowLeft") show(current - 1);
+});
+mainEl.addEventListener("click", e => {
+  const b = e.target.closest(".pager button");
+  if (b && !b.disabled && b.dataset.dir) show(current + +b.dataset.dir);
+});
+
+/* 左右滑動切換天數 */
+let sx = 0, sy = 0;
+mainEl.addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+mainEl.addEventListener("touchend", e => {
+  const dx = e.changedTouches[0].clientX - sx;
+  const dy = e.changedTouches[0].clientY - sy;
+  if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.8) show(current + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+/* 倒數 */
+(function(){
+  const start = new Date(2027, 0, 22);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const n = Math.round((start - today) / 86400000);
+  if (n > 0) {
+    document.getElementById("days").textContent = n;
+    document.getElementById("count").hidden = false;
+  }
+})();
+
+/* 初始化：網址 #dayN > 旅程期間內的今天 > 第一天 */
+document.documentElement.classList.add("js");
+if (!mainEl.querySelector(".panel")) build();
+(function(){
+  let start = 0;
+  let hash = "";
+  try { hash = location.hash || ""; } catch (err) {}
+  const m = hash.match(/^#day(\d)$/);
+  if (m) start = Math.min(DAYS.length, Math.max(0, +m[1] - 1));
+  else {
+    const now = new Date();
+    if (now.getFullYear() === 2027 && now.getMonth() === 0 && now.getDate() >= 22 && now.getDate() <= 27) start = now.getDate() - 22;
+  }
+  show(start, { keepScroll: true });
+})();
+</script>
+</body>
+</html>
